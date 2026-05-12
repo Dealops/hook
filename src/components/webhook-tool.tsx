@@ -524,25 +524,35 @@ function RequestList({
 									<button
 										onClick={() => onSelect(e.id)}
 										className={cn(
-											"w-full text-left px-3 py-2 flex items-center gap-2 transition-colors",
+											"w-full text-left px-3 py-2 flex flex-col gap-1 transition-colors",
 											"hover:bg-accent/60",
 											isSelected && "bg-accent",
 										)}
 									>
-										<span
-											className={cn(
-												"inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold tracking-wide font-mono shrink-0",
-												methodColor(e.method),
-											)}
-										>
-											{e.method}
-										</span>
-										<span className="font-mono text-xs tabular-nums">
-											{formatClock(e.receivedAt)}
-										</span>
-										<span className="ml-auto text-[11px] text-muted-foreground tabular-nums">
-											{formatBytes(e.bodySize)}
-										</span>
+										<div className="flex items-center gap-2 min-w-0 w-full">
+											<span
+												className={cn(
+													"inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold tracking-wide font-mono shrink-0",
+													methodColor(e.method),
+												)}
+											>
+												{e.method}
+											</span>
+											<span
+												className="font-mono text-xs truncate min-w-0"
+												title={e.path}
+											>
+												{e.path}
+											</span>
+										</div>
+										<div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+											<span className="font-mono tabular-nums">
+												{formatClock(e.receivedAt)}
+											</span>
+											<span className="ml-auto tabular-nums">
+												{formatBytes(e.bodySize)}
+											</span>
+										</div>
 									</button>
 								</li>
 							);

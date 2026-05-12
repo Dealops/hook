@@ -1,9 +1,9 @@
 {
-  "name": "next-starter-template",
+  "name": "hook",
   "version": "1.0.0",
-  "description": "Build a full-stack web application with Next.js.",
+  "description": "A disposable webhook receiver built on Next.js + Cloudflare Workers.",
   "cloudflare": {
-    "label": "Next.js Framework Starter",
+    "label": "A disposable webhook receiver built on Next.js + Cloudflare Workers.",
     "products": [
       "Workers"
     ],

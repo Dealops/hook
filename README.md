@@ -2,11 +2,17 @@
 
 A disposable webhook receiver built on Next.js + Cloudflare Workers.
 
+[Use Now](https://hook.dlo.ps/)
+
 - Open the page → you get a random URL like `https://<host>/h/<id>`
 - Send any HTTP request to that URL → it streams into the browser live (SSE)
 - The endpoint stays alive for **60 minutes after the last received request**, then 410s
 - Webhook payloads are **never persisted** — they're broadcast through a Durable Object and stored only in the receiving browser's `sessionStorage`
 - Empty state shows a `curl` snippet you can paste; once requests arrive, pick one from the sidebar to inspect headers, query, and a pretty-printed body
+
+### Preview
+
+<img width="2388" height="1922" src="https://github.com/user-attachments/assets/40e68525-0c6d-4b22-9c09-610141d4b172" />
 
 ## Architecture
 

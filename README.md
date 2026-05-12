@@ -1,63 +1,32 @@
-# Next.js Framework Starter
+# Hook
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/next-starter-template)
+A disposable webhook receiver built on Next.js + Cloudflare Workers.
 
-<!-- dash-content-start -->
+- Open the page → you get a random URL like `https://<host>/h/<id>`
+- Send any HTTP request to that URL → it streams into the browser live (SSE)
+- The endpoint stays alive for **60 minutes after the last received request**, then 410s
+- Webhook payloads are **never persisted** — they're broadcast through a Durable Object and stored only in the receiving browser's `sessionStorage`
+- Empty state shows a `curl` snippet you can paste; once requests arrive, pick one from the sidebar to inspect headers, query, and a pretty-printed body
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). It's deployed on Cloudflare Workers as a [static website](https://developers.cloudflare.com/workers/static-assets/).
+## Architecture
 
-This template uses [OpenNext](https://opennext.js.org/) via the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare), which works by taking the Next.js build output and transforming it, so that it can run in Cloudflare Workers.
+| Piece | Where |
+| --- | --- |
+| Page UI | `src/app/page.tsx` → `src/components/webhook-tool.tsx` |
+| Worker entry (wraps OpenNext) | `worker.ts` |
+| Durable Object (per-session broker) | `src/lib/webhook-session.ts` |
+| DO binding + migration | `wrangler.jsonc` |
 
-<!-- dash-content-end -->
+The custom worker intercepts `/h/{id}[/...]` (webhook receiver, any method) and `/s/{id}` (SSE stream) and forwards both to a `WebhookSession` Durable Object keyed by `id`. Everything else falls through to the OpenNext-built Next.js handler.
 
-Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
+## Commands
 
-```bash
-npm create cloudflare@latest -- --template=cloudflare/templates/next-starter-template
-```
+| Command | Action |
+| :--- | :--- |
+| `npm run dev` | Next.js dev server (UI only — DO routes don't run here) |
+| `npm run preview` | Build with OpenNext, run the full worker locally via `wrangler` (recommended for end-to-end testing) |
+| `npm run build` | Build production bundle |
+| `npm run deploy` | Build + deploy to Cloudflare |
+| `npm run cf-typegen` | Regenerate `env.d.ts` after editing `wrangler.jsonc` |
 
-A live public deployment of this template is available at [https://next-starter-template.templates.workers.dev](https://next-starter-template.templates.workers.dev)
-
-## Getting Started
-
-First, run:
-
-```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
-```
-
-Then run the development server (using the package manager of your choice):
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Deploying To Production
-
-| Command                           | Action                                       |
-| :-------------------------------- | :------------------------------------------- |
-| `npm run build`                   | Build your production site                   |
-| `npm run preview`                 | Preview your build locally, before deploying |
-| `npm run build && npm run deploy` | Deploy your production site to Cloudflare    |
-| `npm wrangler tail`               | View real-time logs for all Workers          |
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+`next dev` proxies bindings via miniflare but cannot run the Durable Object class our wrapper exports — for hitting the live endpoint locally, use `npm run preview`.

@@ -12,7 +12,7 @@ A disposable webhook receiver built on Next.js + Cloudflare Workers.
 
 ### Preview
 
-<img width="2388" height="1922" alt="CleanShot 2026-05-12 at 11 50 07@2x" src="https://github.com/user-attachments/assets/40e68525-0c6d-4b22-9c09-610141d4b172" />
+<img width="2388" height="1922" src="https://github.com/user-attachments/assets/40e68525-0c6d-4b22-9c09-610141d4b172" />
 
 ## Architecture
 
